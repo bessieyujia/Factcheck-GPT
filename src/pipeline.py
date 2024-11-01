@@ -11,6 +11,7 @@ def check_document(doc: str, model: str = "gpt-3.5-turbo-0613", num_retries: int
     # split into claims or sents
     # sents = doc2sentences(doc)
     claims = doc2sentences(doc, mode="claims")
+    print("CLAIMS DONE")
     checkworthy_labels = identify_checkworthiness(claims)
 
     # retrieve evidence for checkworthy claims

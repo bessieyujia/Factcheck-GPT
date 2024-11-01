@@ -1,13 +1,15 @@
 import time
 import openai
-openai.api_key = "" # set openai key here
+from openai import OpenAI
 
 def gpt_single_try(user_input, model = "gpt-3.5-turbo", system_role = "You are a helpful assistant."):
-    response = openai.ChatCompletion.create(
+    client = OpenAI(api_key="UR KEY HERE")
+    
+    response = client.chat.completions.create(
         model=model,
         messages=[
-                {"role": "system", "content": system_role},
-                {"role": "user", "content": user_input},
+            {"role": "system", "content": system_role},
+            {"role": "user", "content": user_input},
         ]
     )
 
@@ -24,9 +26,10 @@ def gpt(user_input, model = "gpt-3.5-turbo",
     r = ''
     for _ in range(num_retries):
         try:
-            r = gpt_single_try(user_input, model, system_role)
+            print("Trying gpt")
+            r = gpt_single_try(user_input=user_input, model=model, system_role=system_role)
             break
-        except openai.error.OpenAIError as exception:
+        except openai.APIConnectionError as exception:
             print(f"{exception}. Retrying...")
             time.sleep(waiting_time)
     return r

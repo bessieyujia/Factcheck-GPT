@@ -17,7 +17,7 @@ from collections import Counter
 import requests
 import re
 import itertools
-from openai.error import RateLimitError
+from openai import RateLimitError
 import bs4
 from typing import List, Dict, Any
 openai.api_key = ""  # set openai key here
