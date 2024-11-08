@@ -20,6 +20,7 @@ import itertools
 from openai import RateLimitError
 import bs4
 from typing import List, Dict, Any
+from openai import OpenAI
 openai.api_key = ""  # set openai key here
 
 QGEN_PROMPT = """I will check things you said and ask questions.
@@ -89,6 +90,7 @@ def parse_api_response(api_response: str) -> List[str]:
     Returns:
         questions: A list of questions.
     """
+    # print(api_response)
     search_string = "I googled:"
     questions = []
     for question in api_response.split("\n"):
@@ -97,7 +99,7 @@ def parse_api_response(api_response: str) -> List[str]:
             continue
         question = question.split(search_string)[1].strip()
         questions.append(question)
-
+    print(question)
     return questions
 
 @backoff.on_exception(backoff.expo, RateLimitError)
@@ -106,7 +108,8 @@ def run_question_generation(prompt, model, temperature, num_rounds, num_retries=
     for _ in range(num_rounds):
         for _ in range(num_retries):
             try:
-                response = openai.ChatCompletion.create(
+                client = OpenAI(api_key="UR KEY")
+                response = client.chat.completions.create(
                     model=model,
                     messages = [
                         {
@@ -116,16 +119,15 @@ def run_question_generation(prompt, model, temperature, num_rounds, num_retries=
                     temperature=temperature,
                     max_tokens=256,
                 )
+                print(response.choices[0].message.content)
                 cur_round_questions = parse_api_response(
-                    response.choices[0]["message"]["content"].strip() 
+                    response.choices[0].message.content
                 )
-                    
                 questions.update(cur_round_questions)
                 break
-            except openai.error.OpenAIError as exception:
+            except openai.OpenAIError as exception:
                 print(f"{exception}. Retrying...")
                 time.sleep(1)
-
     questions = list(sorted(questions))
     return questions
 
@@ -322,10 +324,11 @@ def get_web_evidences_for_claim(claim: str) -> Dict[str, Any]:
     while len(questions) <= 0:
         questions = run_question_generation(
             prompt=QGEN_PROMPT.format(claim=claim),
-            model = "gpt-3.5-turbo",
+            model = "gpt-4-turbo",
             temperature=0.7,
             num_rounds=2,
         )
+    print(questions)
     questions = list(set(questions))
         
     if len(questions) > 0:

@@ -20,7 +20,7 @@ def doc_to_sents(text: str, tool_name = "nltk") -> List[str]:
 
 
 def doc2sentences(doc: str, mode: str="independent_sentences",
-                  model: str="gpt-3.5-turbo", 
+                  model: str="gpt-4-turbo", 
                   system_role: str="You are good at decomposing and decontextualizing text.",
                   num_retries: int=3) -> List[str]:
     if mode == "sentences":

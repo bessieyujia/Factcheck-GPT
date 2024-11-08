@@ -2,8 +2,8 @@ import time
 import openai
 from openai import OpenAI
 
-def gpt_single_try(user_input, model = "gpt-3.5-turbo", system_role = "You are a helpful assistant."):
-    client = OpenAI(api_key="UR KEY HERE")
+def gpt_single_try(user_input, model = "gpt-4-turbo", system_role = "You are tasked to verify the factuality of the provided statements by googlging and reference any related resources in your training data."):
+    client = OpenAI(api_key="UR KEY")
     
     response = client.chat.completions.create(
         model=model,
@@ -20,7 +20,7 @@ def gpt_single_try(user_input, model = "gpt-3.5-turbo", system_role = "You are a
     return result
 
 
-def gpt(user_input, model = "gpt-3.5-turbo", 
+def gpt(user_input, model = "gpt-4-turbo", 
         system_role="You are a helpful assistant.", 
         num_retries=3, waiting_time = 1):
     r = ''
