@@ -108,7 +108,7 @@ def run_question_generation(prompt, model, temperature, num_rounds, num_retries=
     for _ in range(num_rounds):
         for _ in range(num_retries):
             try:
-                client = OpenAI(api_key="UR KEY")
+                client = OpenAI(api_key="UR KEY HERE")
                 response = client.chat.completions.create(
                     model=model,
                     messages = [
